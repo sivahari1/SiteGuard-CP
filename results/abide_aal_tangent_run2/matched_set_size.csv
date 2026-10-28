@@ -1,0 +1,4 @@
+method,mean_cov,worst_site_cov,n_fail_sites,mean_shortfall,set_size,singleton,single_acc
+mondrian,0.89,0.83,3,0.021,1.619,0.381,0.707
+mondrian@a=0.055,0.94,0.893,0,0.001,1.771,0.229,0.737
+wm_cov,0.932,0.857,0,0.005,1.77,0.23,0.7

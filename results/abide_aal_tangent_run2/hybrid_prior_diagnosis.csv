@@ -1,0 +1,5 @@
+prior,prior_MAE,worst_site_cov,n_fail_sites,mean_shortfall,set_size,rho_srs_hyb,rho_srs_cov,rho_err_vs_loss
+em,0.222,0.715,4,0.029,1.684,0.395,0.123,-0.779
+bbse,0.288,0.679,5,0.042,1.648,0.416,0.123,-0.872
+source,0.065,0.857,0,0.005,1.77,0.162,0.123,
+oracle,0.0,0.852,0,0.005,1.774,0.197,0.123,

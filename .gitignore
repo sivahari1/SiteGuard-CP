@@ -1,0 +1,15 @@
+# data and large or per-subject artefacts are never committed
+abide_data/
+siteguard_results/
+*.pkl
+*.npz
+# manuscript is kept out of this repository
+paper/
+*.tex
+*.bib
+*.pdf
+!results/**/figures/*.pdf
+# python / notebook clutter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

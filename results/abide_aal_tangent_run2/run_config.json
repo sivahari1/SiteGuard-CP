@@ -1,0 +1,23 @@
+{
+ "USE_SYNTHETIC": false,
+ "DERIVATIVE": "rois_aal",
+ "CONN_KIND": "tangent",
+ "HARMONIZE": "none",
+ "ALPHA": 0.1,
+ "CAL_FRAC": 0.3,
+ "N_REPEATS": 5,
+ "MIN_TEST_SITE_N": 20,
+ "DOMAIN_SPACE": "pca",
+ "PCA_DOMAIN": 20,
+ "ESS_MIN": 0.2,
+ "W_CLIP": 20.0,
+ "C_LR": 0.05,
+ "TOPK": 100,
+ "GATE_PRED_GAP": 0.03,
+ "GATE_ESS": 0.1,
+ "FAIL_GAP": 0.05,
+ "SEED": 42,
+ "CACHE_FILE": "siteguard_cache.pkl",
+ "DATA_DIR": "/content/abide_data",
+ "OUT_DIR": "./siteguard_results"
+}
