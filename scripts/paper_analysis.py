@@ -4,7 +4,8 @@ Reads the cache written by the notebook's LOSO loop (siteguard_cache.pkl) and
 per_site_results.csv, then writes:
   fine_grid_per_site.csv        coverage / set size per site on an alpha grid
   paper_table2_extra.csv        Table 2 rows: matched Mondrian, WM-CP variants, LSO margin
-  paper_equal_size_tests.csv    equal-set-size comparison vs Mondrian (Sect. 5.1)
+  paper_equal_size_tests.csv    equal-set-size comparison vs Mondrian (Sect. 5.2)
+  paper_label_shift_baseline.csv label-shift CP baseline (Podkopaev & Ramdas 2021), Table 2
   hybrid_prior_em_error.csv     per-site EM prevalence error vs hybrid coverage loss
   figures/per_site_coverage.pdf, frontier.pdf, prior_error.pdf
 
@@ -140,6 +141,35 @@ def main():
     g10 = G[(G.v == 'score') & np.isclose(G.alpha, 0.10)].set_index('site')
     rho = spearmanr(g10['size'] - m10.loc[g10.index, 'size'], 0.90 - m10.loc[g10.index, 'cov'])
     print('Adaptivity: Spearman(extra set size of score WM-CP, Mondrian coverage gap) =', rho)
+
+    # ---------------- label-shift CP baseline (Podkopaev & Ramdas 2021) ----------------
+    def bbse_prior(pcal, ycal, pte, ps):
+        cm = np.stack([pcal[ycal == j].mean(0) * ps[j] for j in (0, 1)], axis=1)
+        w = np.linalg.solve(cm, pte.mean(0))
+        pi = np.clip(w * ps, 0.05, 0.95)
+        return pi / pi.sum()
+    ls_rows = []
+    for e in cache:
+        yc, yt, pc, pt_ = e['ycal'], e['yte'], e['Pcal'], e['Pte']
+        st = lac(pc)[np.arange(len(yc)), yc]
+        ste = lac(pt_)
+        n = len(yt)
+        ps = np.bincount(yc, minlength=2) / len(yc)
+        for name, pi_t in (('EM', em_prior(pt_, ps)), ('BBSE', bbse_prior(pc, yc, pt_, ps))):
+            wcal = (pi_t / ps)[yc]
+            t = np.zeros((n, 2))
+            for k in (0, 1):
+                t[:, k] = threshold(st, 0.10, n, wcal, np.full(n, pi_t[k] / ps[k]))
+            s = ste <= t
+            sz = s.sum(1)
+            ls_rows.append(dict(site=e['site'], prior=name, cov=s[np.arange(n), yt].mean(), size=sz.mean(),
+                                single=(sz == 1).mean(),
+                                sacc=(s.argmax(1) == yt)[sz == 1].mean() if (sz == 1).any() else np.nan))
+    LS = pd.DataFrame(ls_rows).groupby(['prior', 'site']).mean(numeric_only=True).reset_index()
+    ls_tab = [stats(f'Label-shift CP ({pr})', g.set_index('site'), m10) for pr, g in LS.groupby('prior')]
+    ls_tab = pd.DataFrame(ls_tab).set_index('method').round(4)
+    ls_tab.to_csv(os.path.join(out, 'paper_label_shift_baseline.csv'))
+    print(ls_tab.to_string())
 
     # ---------------- figures ----------------
     import matplotlib

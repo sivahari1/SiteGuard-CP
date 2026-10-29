@@ -1,0 +1,3 @@
+method,mean_cov,worst,below_085,shortfall,set_size,singleton,single_acc,p_vs_mondrian
+Label-shift CP (BBSE),0.8919,0.75,4,0.0273,1.6242,0.3758,0.7227,0.4913
+Label-shift CP (EM),0.8875,0.75,5,0.0292,1.6067,0.3933,0.7243,0.7298
